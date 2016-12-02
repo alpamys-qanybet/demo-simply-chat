@@ -1,0 +1,17 @@
+.idea
+*.iml
+
+# main
+api/.classpath
+api/.project
+api/.settings/
+api/target/
+api/overlays/
+api/api.iml
+
+# persistence
+persistence/.classpath
+persistence/.project
+persistence/.settings/
+persistence/target/
+persistence/overlays/

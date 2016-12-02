@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>track|Login</title>
+
+    <link rel="stylesheet" type="text/css" href="js/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style/signin.css">
+
+    <script type="text/javascript" src="js/jquery/jquery-1.11.1.min.js"></script>
+    <script type='text/javascript' src='js/bootstrap/js/bootstrap.min.js'></script>
+    
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="img/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-md-4 col-md-offset-4 center">
+            <h1 class="text-center login-title">Жүйе кірісі</h1>
+            <div class="account-wall">
+                <img class="profile-img img-responsive" src="img/qtrack-bg.png" alt="">
+                <div class="form-signin" role="form">
+                    <input type="text" name="j_username" class="form-control" placeholder="Логин" required autofocus>
+                    <input type="password" name="j_password" class="form-control" placeholder="Құпиясөз" required>
+                    <button class="btn btn-lg btn-primary btn-block" onclick="loginClick();">Кіру</button>
+                    <div id="errmsg">
+                        Логин немесе құпиясөз дұрыс емес
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+    jQuery('#errmsg').hide();
+    var login = jQuery('input[name=j_username]');
+    var password = jQuery('input[name=j_password]');
+    var $focused = $(':focus');
+    var hasFocus = null;
+    var url = document.referrer;
+
+//    var domainUrl = 'http://192.168.1.200:8080';
+    var domainUrl = window.location.origin;
+//    var domainUrl = 'http://alpamys-samsung:8080';
+
+    $(document).keypress(function(e) {
+        hasFocus = password.is(':focus');
+        if(hasFocus){
+            if(e.which == 13) {
+                loginClick();
+            }
+        }
+    });
+
+    function loginClick() {
+        var loginVal = login.val();
+        var passwordVal = password.val();
+
+        var dataString = 'j_username=' + loginVal
+                + '&j_password=' + passwordVal;
+
+        jQuery.ajax({
+            type: "POST",
+            url: "j_security_check",
+            data: dataString,
+            success: function (data) {
+                jQuery('#errmsg').hide();
+
+                if (data === 'success') {
+                    window.location = url;
+                    //history.go(-1);
+                }
+
+                if (data === 'error') {
+                    console.log('aha error');
+                    jQuery('#errmsg').show();
+                }
+            }
+        });
+    };
+
+    jQuery.ajax({
+        type: "GET",
+        url: domainUrl+"/api/rest/secure/service",
+        //data: "url=http://localhost/es/ui/app",
+        success: function (data) {
+            console.log(data);
+            goToSystem();
+        }
+    });
+    
+    function goToSystem() {
+    	jQuery.ajax({
+            type: "GET",
+            url: domainUrl+"/api/rest/authorized",
+            success: function (data) {
+                if (data === 'true') {
+                	window.location = domainUrl+'/api/ui/app';
+                }
+            }
+        });
+    }
+</script>
+</html>
