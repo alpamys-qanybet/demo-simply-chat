@@ -1,7 +1,7 @@
 package info.simply.chat.core.resource;
 
 public class ResourceBean {
-    static final private String host = "alpamys-samsung:8080";
+    static final private String host = System.getProperty("host")+":8080";
     public static String getHost() {
         return host;
     }
