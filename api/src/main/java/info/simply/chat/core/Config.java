@@ -2,8 +2,6 @@ package info.simply.chat.core;
 
 import info.simply.chat.core.resource.ResourceBean;
 import info.simply.chat.user.UserBean;
-import info.simply.chat.user.UserWrapper;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
@@ -12,8 +10,6 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 

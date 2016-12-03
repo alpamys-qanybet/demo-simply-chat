@@ -98,26 +98,16 @@ public class RoomRest {
     @Path("/{id}/users")
     @Transactional
     public GenericWrapper addUser(@PathParam("id") Long id, UserWrapper userWrapper) throws IOException {
-        if (securityBean.hasRole(request.getUserPrincipal().getName(), Role.Name.ADMIN)) {
-            return GenericWrapper.wrap(roomBean.addUser(id, userWrapper));
-        }
-        else {
-            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
-            return GenericWrapper.wrap(false);
-        }
+//        if (securityBean.hasRole(request.getUserPrincipal().getName(), Role.Name.ADMIN)) {
+        return GenericWrapper.wrap(roomBean.addUser(id, userWrapper));
     }
 
     @DELETE
     @Path("/{id}/users/{userId}")
     @Transactional
     public GenericWrapper deleteUser(@PathParam("id") Long id, @PathParam("userId") Long userId) throws IOException {
-        if (securityBean.hasRole(request.getUserPrincipal().getName(), Role.Name.ADMIN)) {
-            return GenericWrapper.wrap(roomBean.removeUser(id, userId));
-        }
-        else {
-            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
-            return GenericWrapper.wrap(false);
-        }
+//        if (securityBean.hasRole(request.getUserPrincipal().getName(), Role.Name.ADMIN)) {
+        return GenericWrapper.wrap(roomBean.removeUser(id, userId));
     }
 
     @POST

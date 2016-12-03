@@ -33,4 +33,11 @@ public class GenericWrapper<T> {
 
         return list;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "field:" + field +
+                '}';
+    }
 }

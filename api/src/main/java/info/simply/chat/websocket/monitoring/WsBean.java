@@ -33,8 +33,9 @@ public class WsBean {
         LAUNCH_INFO,
         ADD_ROOM, EDIT_ROOM, REMOVE_ROOM,
         ADD_USER, EDIT_USER, REMOVE_USER,
-        ADD_USER_TO_ROOM, REMOVE_USER_FROM_ROOM,
-        MESSAGE_ROOM
+        ADD_USER_TO_ROOM, REMOVE_USER_FROM_ROOM, JOIN_ROOM, LEAVE_ROOM,
+        MESSAGE_ROOM,
+        ON_WS_OPEN, ON_WS_CLOSE
     }
 
     public String messageOnLaunch() throws JSONException {

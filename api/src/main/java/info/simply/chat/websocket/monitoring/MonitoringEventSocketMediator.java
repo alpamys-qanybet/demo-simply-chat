@@ -1,5 +1,7 @@
 package info.simply.chat.websocket.monitoring;
 
+import info.simply.chat.core.GenericWrapper;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -11,9 +13,7 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 @ServerEndpoint("/monitoring/{client-id}")
@@ -59,11 +59,60 @@ public class MonitoringEventSocketMediator {
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
+
+        sendAllAboutOnline(session.getId(), getLogin(session), true);
     }
 
     @OnClose
     public void onClose(Session session, @PathParam("client-id") String clientId) {
-//        System.out.println("mediator: closed websocket channel for client " + clientId);
+        String login = getLogin(session);
         peers.remove(session);
+        sendAllAboutOnline(session.getId(), login, false);
+    }
+
+    private String getLogin(Session session) {
+        if (session == null)
+            return null;
+        else {
+            if (session.getUserPrincipal() == null)
+                return null;
+            else {
+                return session.getUserPrincipal().getName();
+            }
+        }
+    }
+
+    private void sendAllAboutOnline(String sessionId, String login, boolean isOnlineEvent) {
+            List<String> logins = new ArrayList<>();
+
+            for (Session session : peers) {
+                String l = getLogin(session);
+                if (l != null)
+                    logins.add(l);
+            }
+
+            String event = isOnlineEvent ? WsBean.Event.ON_WS_OPEN.toString() : WsBean.Event.ON_WS_CLOSE.toString();
+            StringBuilder sb = new StringBuilder("{\"event\":\""+event+"\",");
+            if (isOnlineEvent)
+                sb.append("\"online\"");
+            else
+                sb.append("\"offline\"");
+            sb.append(":\""+login+"\"}");
+
+            String onOrOffline = sb.toString();
+
+            for (Session s : peers) {
+                try {
+                    if (s.getId().equals(sessionId)) {
+                        JSONObject json = new JSONObject();
+                        json.put("event", event);
+                        json.put("online", new JSONArray(GenericWrapper.wrap(logins).toString()));
+                        s.getBasicRemote().sendText(json.toString());
+                    } else
+                        s.getBasicRemote().sendText(onOrOffline);
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
     }
 }
